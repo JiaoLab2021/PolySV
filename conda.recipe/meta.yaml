@@ -1,0 +1,51 @@
+{% set name = "polysv" %}
+{% set version = "1.0.6" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  path: ..
+
+build:
+  script: "bash build.sh"
+  number: 0
+  entry_points:
+    - polysv = polysv:main
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - make
+    - git
+    - wget
+    - tar
+  host:
+    - python 3.8
+    - pip
+    - setuptools
+  run:
+    - python 3.8
+    - debreak
+    - samtools
+    - minimap2
+    - cutesv
+    - sniffles
+    - svim
+    - svim-asm
+    # mummer4 and assemblytics will be installed from source in build.sh
+
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+
+about:
+  home: https://github.com/JiaoLab2021/PolySV
+  license: MIT
+  summary: "A high-quality SV detection, genotyping and optimization pipeline"
+
+extra:
+  recipe-maintainers:
+    - He Jiabao

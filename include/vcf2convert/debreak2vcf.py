@@ -1,0 +1,225 @@
+#!/usr/bin/env python3
+
+# -*- coding: utf-8 -*-
+
+
+__data__ = "2026/03/16"
+__version__ = "1.0.6"
+__author__ = "He Jiabao"
+__email__ = "hejiabao2001@gmail.com or hejiabao@webmail.hzau.edu.cn"
+
+
+import os
+import re
+import sys
+import multiprocessing
+from datetime import datetime
+
+
+# environment variables
+env_path = {'PATH': os.environ.get('PATH')}
+# include
+include_dir = os.path.dirname(os.path.realpath(__file__))
+for root, dirs, files in os.walk(os.path.join(include_dir, "include")):
+    sys.path.append(root)
+
+from genome import MyGenome
+from vcf_io import MyVCF
+
+
+class MyDebreak2convert:
+    def __init__(self, reference_path, samplename, threads, invcfpath, outvcfpath, sequenceDict):
+
+        # Parameter
+        self.reference_path = reference_path
+        self.samplename = samplename
+        self.threads = threads
+
+        # Value
+        self.invcfpath = invcfpath
+        self.outvcfpath = outvcfpath
+        self.sequenceDict = sequenceDict
+
+        # Class
+        self.invcfClass = MyVCF(self.invcfpath)
+        self.outvcfClass = MyVCF(self.outvcfpath)
+        self.referenceClass = MyGenome(self.reference_path)
+
+
+    # head
+    def head(self):
+        # Header Information
+        time_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Current running time
+        command_str = f"##polysv vcf2convertCommand=debreak "  # Command
+        header_line = command_str + time_str + "\n"
+        # Output
+        output_head_lines = []
+        invcfOpen = self.invcfClass.open_vcf_file()
+        with invcfOpen as f_in:
+            for line in f_in:
+                info = line.strip()
+                infoList = info.split("\t")
+                if "##" in line:
+                    output_head_lines.append(line)
+                elif "#" in line:
+                    output_head_lines.append(header_line)
+                    line_list = infoList[:9] + [self.samplename]
+                    line_str = '\t'.join(line_list).strip() + "\n"
+                    output_head_lines.append(line_str)
+                else:
+                    break
+
+        return output_head_lines
+
+
+    def convert(self, CHROMOSOME):
+
+        # Storage List
+        output_lines = []
+
+        # re
+        patternR = r"SUPPREAD=(\d+)"  # Read Depth
+        patternE = r"END=(\d+)"
+        patternL = r"SVLEN=(-?\d+)"
+        patternQ = r"MAPQ=(\d+)"
+
+        # id
+        nums_dic = {
+            'delnum': 0,
+            'invnum': 0,
+            'dupnum': 0,
+            'insnum': 0
+        }
+
+        # I/O vcf
+        invcfOpen = self.invcfClass.open_vcf_file()
+
+        # Loop through
+        with invcfOpen as f_in:
+            for line in f_in:
+                if "#" in line:
+                    continue
+                else:
+                    info = line.strip()
+                    infoList = info.split("\t")
+                    INFOCol = infoList[7]
+                    chromosome = infoList[0]
+
+                    # Multi-process
+                    if chromosome != CHROMOSOME:
+                        continue
+
+                    # Skip line
+                    if "SVTYPE=TRA" in info:  # TRA
+                        continue
+                    if infoList[6] != "PASS":  # FILTER
+                        continue
+                    readDepth = int(re.search(patternR, INFOCol).group(1))  # Read Depth
+                    if readDepth < 5:
+                        continue
+                    if int(re.search(patternQ, INFOCol).group(1)) < 30:  # MAPQ
+                        continue
+
+                    # Start and end position
+                    refStart = int(infoList[1])
+                    if refStart < 50:
+                        continue
+                    #refSeq = self.referenceClass.seq_extr(self.sequenceDict, CHROMOSOME, refStart, refEnd)
+                    qrySeq = infoList[4]
+                    # INV and DUP have END coordinates, INS and DEL do not
+                    refEnd = 0
+                    if "END" in INFOCol:
+                        refEnd = int(re.search(patternE, INFOCol).group(1))
+
+                    # SVLEN
+                    svLen = abs(int(re.search(patternL, INFOCol).group(1)))
+                    if svLen < 50:   # Filter out SNPs and InDels
+                        continue
+
+                    # DEL
+                    if "SVTYPE=DEL" in INFOCol:
+                        nums_dic['delnum'] += 1
+                        # 51bp to 100kb DEL
+                        if svLen > 100000:
+                            continue
+                        refStart = refStart - 1
+                        vcfId = f"debreak.DEL.{CHROMOSOME}.{nums_dic['delnum']}"
+                        refSeq = self.referenceClass.seq_extr(self.sequenceDict, chromosome, refStart, refStart) + infoList[3]
+                        qrySeq = refSeq[0]
+                        # END
+                        INFOCol = INFOCol.replace(f"CHR2", f"END={refStart + len(refSeq) - 1};CHR2")
+                    # INS
+                    elif "SVTYPE=INS" in INFOCol:
+                        nums_dic['insnum'] += 1
+                        # 51bp to 20kb INS
+                        if svLen > 20000 or "INS" in infoList[4]:
+                            continue
+                        refStart = refStart - 1
+                        vcfId = f"debreak.INS.{CHROMOSOME}.{nums_dic['insnum']}"
+                        refSeq = self.referenceClass.seq_extr(self.sequenceDict, chromosome, refStart, refStart)
+                        qrySeq = refSeq + infoList[4]
+                        # END
+                        INFOCol = INFOCol.replace(f"CHR2", f"END={refStart + len(refSeq) - 1};CHR2")
+                    # INV
+                    elif "SVTYPE=INV" in INFOCol:
+                        nums_dic['invnum'] += 1
+                        # 51bp to 20kb INV
+                        if svLen > 20000:
+                            continue
+                        refStart = refStart - 1
+                        vcfId = f"debreak.INV.{CHROMOSOME}.{nums_dic['invnum']}"
+                        refSeq = self.referenceClass.seq_extr(self.sequenceDict, chromosome, refStart, refEnd)
+                        qrySeq = refSeq[0] + self.referenceClass.dna_reverse_complement(refSeq[1:])
+                    # DUP
+                    elif "SVTYPE=DUP" in INFOCol:
+                        nums_dic['dupnum'] += 1
+                        # 51bp to 20kb DUP
+                        if svLen > 20000:
+                            continue
+                        refStart = refStart - 2
+                        vcfId = f"debreak.DUP.{CHROMOSOME}.{nums_dic['dupnum']}"
+                        refEnd = refEnd - 1
+                        refSeq = self.referenceClass.seq_extr(self.sequenceDict, chromosome, refStart, refEnd)
+                        qrySeq = refSeq + "N"*28 + refSeq[1:]
+                        # INFO
+                        INFOCol = re.sub(r"(?<=END=)\d+", str(refEnd), INFOCol)
+
+                    ## Out
+                    
+                    # SVLEN
+                    svLen = len(qrySeq) - len(refSeq)
+                    INFOCol = re.sub(r"(?<=SVLEN=)-?\d+", str(svLen), INFOCol)
+
+                    # SAMPLE
+                    genotype = re.split(':', infoList[9])[0]  # Genotype only (e.g. 1/1)
+                    if genotype in ["./.", "0/0", ".", "0"]:
+                        continue
+
+                    # Final_line_str
+                    debreak_line_list = [chromosome, str(refStart), vcfId, refSeq, qrySeq] + infoList[5:7] + \
+                                        [INFOCol, "GT", genotype]
+                    final_line_str = '\t'.join(debreak_line_list).strip() + "\n"
+                    output_lines.append(final_line_str)
+
+        return output_lines
+
+
+    # result
+    def output(self):
+        # CHROMOSOME_list
+        CHROMOSOME_list = list(self.sequenceDict.keys())  # Chromosome list
+
+        # head result
+        output_head_lines = self.head()
+        # vcf result
+        pool = multiprocessing.Pool(processes=self.threads)
+        output_lines = pool.starmap(self.convert, [(CHROMOSOME,) for CHROMOSOME in CHROMOSOME_list])
+        pool.close()
+        pool.join()
+
+        # out
+        outvcfWrite = self.outvcfClass.write_vcf_file()
+        with outvcfWrite as f_out:
+            f_out.writelines(output_head_lines)
+            for output_line in output_lines:
+                f_out.writelines(output_line)
