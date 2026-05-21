@@ -46,7 +46,7 @@ source ~/.bashrc
 polysv -h
 ```
 
-### Test
+## Test
 ```
 # Install
 samtools
