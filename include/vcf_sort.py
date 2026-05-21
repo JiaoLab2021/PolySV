@@ -49,10 +49,10 @@ class MyVcfsort():
         # Sort vcf file
         if self.vcfFile.endswith('.gz'):
             sortcmd = "zcat {0} | grep '#' | bgzip > {0}.sort; zcat {0} | grep -v '#' | " \
-                "sort --parallel=10 -k 1,1 -k 2,2n -t $'\t' | bgzip >> {0}.sort; mv {0}.sort {0}".format(self.vcfFile)
+                "sort -k 1,1 -k 2,2n -t $'\t' | bgzip >> {0}.sort; mv {0}.sort {0}".format(self.vcfFile)
         else:
             sortcmd = "grep '#' {0} > {0}.sort; grep -v '#' {0} | " \
-                "sort --parallel=10 -k 1,1 -k 2,2n -t $'\t' >> {0}.sort; mv {0}.sort {0}".format(self.vcfFile)
+                "sort -k 1,1 -k 2,2n -t $'\t' >> {0}.sort; mv {0}.sort {0}".format(self.vcfFile)
         self.logger.error(f'Start sort the file {self.vcfFile}: {sortcmd}')
         run_cmd.run(sortcmd, env_path)
         self.logger.error(f'{self.vcfFile} sorting is done.')

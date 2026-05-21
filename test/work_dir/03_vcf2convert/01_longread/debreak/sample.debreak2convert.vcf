@@ -1,7 +1,7 @@
 ##fileformat=VCFv4.2
 ##FILTER=<ID=PASS,Description="All filters passed">
 ##source=DeBreak
-##fileDate=2025-09-17
+##fileDate=2026-05-21
 ##contig=<ID=Chr1,length=1000000>
 ##ALT=<ID=DEL,Description="Deletion">
 ##ALT=<ID=INS,Description="Insertion">
@@ -22,8 +22,8 @@
 ##INFO=<ID=END2,Number=1,Type=Integer,Description="SV end position on the second haplotype of multi-allilic SV">
 ##INFO=<ID=SVLEN2,Number=1,Type=Integer,Description="SV length on the second haplotype of multi-allilic SV">
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
-##CommandLine=debreak --thread 90 --bam /home/data/jbhe/software/jbhe/test/work_dir/01_align/01_longread/minimap2/sample.bam --ref /home/data/jbhe/software/jbhe/test/refgenome.fa --min_size 50 --max_size 10000000 --min_support 5 --outpath /home/data/jbhe/software/jbhe/test/work_dir/02_call/01_longread/debreak/tmp_work --rescue_large_ins --rescue_dup --poa
-##hqsv vcf2convertCommand=debreak 2025-09-17 19:58:27
+##CommandLine=debreak --thread 50 --bam /home/data/jbhe/software/polysv/test/work_dir/01_align/01_longread/minimap2/sample.bam --ref /home/data/jbhe/software/polysv/test/refgenome.fa --min_size 50 --max_size 10000000 --min_support 5 --outpath /home/data/jbhe/software/polysv/test/work_dir/02_call/01_longread/debreak/tmp_work --rescue_large_ins --rescue_dup --poa
+##polysv vcf2convertCommand=debreak 2026-05-21 01:16:35
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	sample
 Chr1	68246	debreak.DEL.Chr1.1	TCAAATGATCATAATATTTGACTCGAACGTCCTTTTGACGCAATTTTTTTTTTGATCCCTCGTATTTTTTCGATTTCTATTCGAAAAAGTCATTCGCATTCGTTGAATTTCCTTTTAATGATTTCGTGATATTTCTAATCATATAAGAATGAGCAAAAGGCGTTTTCTGAAAAATCGGATCCTTTAAACCACCTCGCGACGTTTCGGATGAGT	T	.	PASS	END=68458;CHR2=Chr1;SVLEN=-212;SUPPREAD=9;MAPQ=39;SVMETHOD=DeBreak;SVTYPE=DEL;MULTI	GT	0/1
 Chr1	71245	debreak.DEL.Chr1.2	TTTTACTTTTTTCCCGTGCACCTTCAGTCTTTGAGATGCTGAATTCTCGAATGATCGTAACTTTCGACTTGAACGTCCTTTTGATGCAATTTTTTTTTTGATCCCTTGTATTTTTTCGAGATCTATTCGAAAAAATCATTCGCATTCGTTGAATTTCCTTTGAATTTTTTCGTGATATTTCTACTCGTATAAGAATGAACAAAAGGCGTTTTCTAAAAAATTGGATTGATCAAACCGCCGCCTGACGTTTCGGTTGAGTAGATACCGTAAAAATATGCAGATTCAAAAAAAAAATCGCCTGAAACGGACGTCCGAAGCTCGAGTTATGGCCGTTTGAATTTTATTTTTCTATTCTCATCTTATTTCTACTCACCTAAGAATGAGCAAAAGACATTTTTCGAAAAGCCGGCTCGCTCAAACCGCCTTACGGAAGTTTTATTGCGTAGATATCGAAAAAATACGCAGTTTCAAAAAAAAAATCGACTGAAACGGACCTCCGAGGCC	T	.	PASS	END=71748;CHR2=Chr1;SVLEN=-503;SUPPREAD=11;MAPQ=31;SVMETHOD=DeBreak;SVTYPE=DEL	GT	0/1

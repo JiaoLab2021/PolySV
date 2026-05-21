@@ -212,3 +212,4 @@ class MyAssemblytics2convert:
                 f_out.writelines(output_line)
         # Sort
         self.sortClass.sort()
+

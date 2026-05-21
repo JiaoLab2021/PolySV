@@ -1,4 +1,4 @@
-/home/data/jbhe/software/jbhe/test/refgenome.fa /home/data/jbhe/software/jbhe/test/sample.fa
+/home/data/jbhe/software/polysv/test/refgenome.fa /home/data/jbhe/software/polysv/test/sample.fa
 NUCMER
 >Chr1 Hs_H1_Chr1 1000000 1000000
 82147 97792 137234 152811 1169 1169 0

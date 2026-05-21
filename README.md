@@ -7,8 +7,8 @@ A high-quality SV detection and optimization pipeline
 ## Requirements
 Please note the following requirements before building and running the software:
 - `linux` operating system
-- Python3 (version: `3.9.15`)
-- The following dependencies must also be installed: [samtools](https://github.com/samtools/samtools)(version: `1.18`), [Minimap2](https://github.com/lh3/minimap2) (version: `2.28-r1209`), [MuMmer](https://github.com/mummer4/mummer) (version: `4.0.0rc1`), [Sniffles2](https://github.com/fritzsedlazeck/Sniffles), (version: `2.2`), [SVIM](https://github.com/eldariont/svim) (version: `2.0.0`), [cuteSV2](https://github.com/tjiangHIT/cuteSV) (version: `2.1.0`), [debreak](https://github.com/Maggi-Chen/DeBreak) (version `1.0.2`), [svim-asm](https://github.com/eldariont/svim-asm) (version: `1.0.3`), [Assemblytics](https://github.com/marianattestad/assemblytics) (version: `1.2.1`), [Jasmine](https://github.com/mkirsche/Jasmine) (version `1.1.5`)
+- Python3 (version: `3.8.20`)
+- The following dependencies must also be installed: [samtools](https://github.com/samtools/samtools)(version: `1.18`), [Minimap2](https://github.com/lh3/minimap2) (version: `2.28-r1209`), [MuMmer](https://github.com/mummer4/mummer) (version: `4.0.0rc1`), [Sniffles2](https://github.com/fritzsedlazeck/Sniffles), (version: `2.2`), [SVIM](https://github.com/eldariont/svim) (version: `2.0.0`), [cuteSV2](https://github.com/tjiangHIT/cuteSV) (version: `2.1.0`), [debreak](https://github.com/Maggi-Chen/DeBreak) (version `1.0.2`), [svim-asm](https://github.com/eldariont/svim-asm) (version: `1.0.3`), [Assemblytics](https://github.com/marianattestad/assemblytics) (version: `1.2.1`), [Jasmine](https://github.com/mkirsche/Jasmine) (version `1.1.5`), [bcftools](https://github.com/samtools/bcftools) (version `1.15.1`)
 
 
 ## Installation

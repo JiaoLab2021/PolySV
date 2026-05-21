@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 
 # Read the contents of your README file
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -13,7 +13,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/JiaB-He/PolySV",
-    packages=find_packages(include=['include', 'include.*']),
+    packages=find_namespace_packages(include=['include', 'include.*']),
     py_modules=['polysv'],
     classifiers=[
         "Programming Language :: Python :: 3",

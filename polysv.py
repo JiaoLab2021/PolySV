@@ -19,9 +19,12 @@ import shutil
 # environment variables
 env_path = {'PATH': os.environ.get('PATH')}
 # include
-include_dir = os.path.dirname(os.path.realpath(__file__))
-for root, dirs, files in os.walk(os.path.join(include_dir, "include")):
-    sys.path.append(root)
+base_dir = os.path.dirname(os.path.abspath(__file__))
+target_include = os.path.join(base_dir, "include")
+if os.path.exists(target_include):
+    sys.path.insert(0, target_include)
+    for root, dirs, files in os.walk(target_include):
+        sys.path.insert(0, root)
 
 # from saveResult import MySaveResult
 from make_dir import MyMkdir
@@ -75,17 +78,17 @@ class MyParser:
         self.required_input.add_argument(
             "-tgs", "--fq",
             dest="fq",
-            help="hird-generation sequencing technology, Suffix is fastq(fq).gz or fastq(fq)",
+            help="Third-generation technology, Suffix is fastq(fq).gz or fastq(fq)",
         )
         self.required_input.add_argument(
             "-tgsdt", "--fqdt",
             dest="fqdt",
-            help="Three-generation sequencing data types: ccs or clr or ont",
+            help="Third-generation sequencing data types: ccs or clr or ont",
         )
         self.required_input.add_argument(
             "-genome", "--fa",
             dest="fa",
-            help="Query genome data, Suffix is fasta(fa).gz or fastq(fa)",
+            help="Query genome data, accepted formats: .fa/.fasta (optionally gzipped",
         )
         self.required_input.add_argument(
             "-n", "--name",
