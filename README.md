@@ -25,36 +25,27 @@ polysv -h
 ```
 ### Build and Install from Source
 Use the following script to build the software:
-1. Get the PolySV source code
-```
-git clone git@github.com:JiaoLab2021/PolySV.git
-cd PolySV && ln -s polysv.py polysv
-./polysv -h
-```
-2. Make sure all required dependencies are installed before execution
+1. Make sure all required dependencies are installed before execution
 ```
 # Install all dependencie
 conda create -n polysv_env
 conda activate polysv_env
-conda install make=4.4.1 python=3.9 r-base=4.2.2 samtools=1.18 minimap2=2.28 \
-cutesv sniffles svim svim-asm jasminesv -c bioconda -c conda-forge
-
-# Debreak
+conda install make=4.4.1 python=3.9 r-base=4.2.2 samtools=1.18 minimap2=2.28 mummer4=4.0.0rc1 \
+cutesv sniffles svim svim-asm jasminesv assemblytics=1.2.1 -c bioconda -c conda-forge
 git clone https://github.com/Maggi-Chen/DeBreak.git
 cd DeBreak
-
-# MuMmer
-wget -c https://github.com/mummer4/mummer/releases/download/v4.0.0rc1/mummer-4.0.0rc1.tar.gz
-tar -zxvf mummer-4.0.0rc1.tar.gz
-cd mummer-4.0.0rc1
-./configure --prefix=$PREFIX
-make
-make install
-
-# Assemblytics
-git clone https://github.com/marianattestad/assemblytics.git
-chmod a+x assemblytics/scripts/Assemblytics*
+echo 'export PATH="$PATH:'$(pwd)'"' >> ~/.bashrc
+source ~/.bashrc
 ```
+2. Get the PolySV source code
+```
+git clone git@github.com:JiaoLab2021/PolySV.git
+cd PolySV && ln -s polysv.py polysv
+echo 'export PATH="$PATH:'$(pwd)'"' >> ~/.bashrc
+source ~/.bashrc
+polysv -h
+```
+
 ### Test
 ```
 # Install
@@ -72,4 +63,4 @@ jasmine -h
 
 # Run
 cd test
-polysv -r refgenome.fa -tgs sample.fastq.gz -tgsdt ccs -genome sample.fa -n sample -o sample.vcf.gz
+polysv -r refgenome.fa -tgs sample.fastq.gz -tgsdt ccs -genome sample.fa -n sample -o sample.vcf.gz --restart

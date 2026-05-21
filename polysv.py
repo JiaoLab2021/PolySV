@@ -73,27 +73,32 @@ class MyParser:
             "-r", "--reference",
             dest="reference",
             help="reference genome file",
+            default="refgenome.fa",
             required=True
         )
         self.required_input.add_argument(
             "-tgs", "--fq",
             dest="fq",
-            help="Third-generation technology, Suffix is fastq(fq).gz or fastq(fq)",
+            help="third-generation technology, Suffix is fastq(fq).gz or fastq(fq)",
+            default="sample.fastq.gz",
         )
         self.required_input.add_argument(
             "-tgsdt", "--fqdt",
             dest="fqdt",
-            help="Third-generation sequencing data types: ccs or clr or ont",
+            help="third-generation sequencing data types: ccs or clr or ont",
+            default="ccs",
         )
         self.required_input.add_argument(
             "-genome", "--fa",
             dest="fa",
-            help="Query genome data, accepted formats: .fa/.fasta (optionally gzipped",
+            help="query genome data, accepted formats: .fa/.fasta (optionally gzipped)",
+            default="sample.fa",
         )
         self.required_input.add_argument(
             "-n", "--name",
             dest="samplename",
-            help="Sample name",
+            help="sample name",
+            default="sample",
             required=True
         )
 
@@ -105,7 +110,7 @@ class MyParser:
             dest="output",
             help="output file name",
             type=str,
-            default="output.vcf.gz",
+            default="sample.vcf.gz",
             required=True
         )
 
@@ -115,9 +120,9 @@ class MyParser:
         self.optional.add_argument(
             "-w", "--workdir",
             dest="workdir",
-            help="Work directory",
+            help="work directory",
             type=str,
-            default="work_dir"
+            default="work_dir",
         )
         self.optional.add_argument(
             "-j", "--jobs",
@@ -137,13 +142,13 @@ class MyParser:
             "--restart",
             dest="restart",
             action="store_true",
-            help="Attempt to restart existing workflow based on the state of output files [False]",
+            help="attempt to restart existing workflow based on the state of output files [False]",
         )
         self.optional.add_argument(
             "--remove",
             dest="remove",
             action="store_true",
-            help="Delete the generated intermediate files [False]",
+            help="delete the generated intermediate files [False]",
         )
 
         # Algorithm parameters
@@ -152,28 +157,28 @@ class MyParser:
         self.algorithm.add_argument(
             "--depth_correction_l_threshold",
             dest="l_depth_ratio",
-            help="Threshold for correction depth based on TGS alignment",
+            help="threshold for correction depth based on TGS alignment",
             type=float,
             default=0.75
         )
         self.algorithm.add_argument(
             "--depth_correction_a_threshold",
             dest="a_depth_ratio",
-            help="Threshold for correction depth based on genome alignment",
+            help="threshold for correction depth based on genome alignment",
             type=float,
             default=0.25
         )
         self.algorithm.add_argument(
             "--del_breakpoint_window",
             dest="del_window",
-            help="The size of the sliding window in the DEL correction algorithm (bp)",
+            help="the size of the sliding window in the DEL correction algorithm (bp)",
             type=int,
             default=25
         )
         self.algorithm.add_argument(
             "--ins_breakpoint_window",
             dest="ins_window",
-            help="The size of the sliding window in the INS correction algorithm (bp)",
+            help="the size of the sliding window in the INS correction algorithm (bp)",
             type=int,
             default=3
         )
