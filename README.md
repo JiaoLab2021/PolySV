@@ -1,7 +1,7 @@
 # PolySV
 
 ## Introduction
-A high-quality SV detection and optimization pipeline
+A high-quality SV detection, genotyping and optimization pipeline
 
 
 ## Requirements
