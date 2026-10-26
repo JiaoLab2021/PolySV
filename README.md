@@ -60,7 +60,16 @@ svim -h
 svim-asm -h
 Assemblytics
 jasmine -h
+```
 
 # Run
+```
 cd test
 polysv -r refgenome.fa -tgs sample.fastq.gz -tgsdt ccs -genome sample.fa -n sample -o sample.vcf.gz --restart
+```
+
+## Citation
+```
+When using the following tools, please cite the corresponding articles:
+- 
+
